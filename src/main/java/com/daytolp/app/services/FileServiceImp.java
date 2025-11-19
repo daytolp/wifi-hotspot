@@ -1,6 +1,5 @@
 package com.daytolp.app.services;
 
-import com.daytolp.app.constanst.Constants;
 import com.daytolp.app.dtos.AccessPointProcessResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -19,6 +18,9 @@ import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implementación del servicio de procesamiento de archivos Excel con puntos de acceso WiFi.
+ */
 @Slf4j
 @Service
 public class FileServiceImp implements FileService {
@@ -29,8 +31,20 @@ public class FileServiceImp implements FileService {
     @Autowired
     Job job;
 
+    /**
+     * Procesa un archivo Excel con puntos de acceso WiFi mediante un job de Spring Batch.
+     *
+     * @param multipartFile Archivo Excel (.xlsx) cargado desde el cliente HTTP.
+     *                      Debe contener puntos de acceso WiFi en el formato especificado.
+     *                      No debe ser null ni estar vacío.
+     * @return Objeto AccessPointProcessResponse que contiene listas de IDs guardados y omitidos.
+     */
     @Override
     public AccessPointProcessResponse processFile(MultipartFile multipartFile) {
+        String name = multipartFile.getOriginalFilename();
+        if (name == null || !name.endsWith(".xlsx")) {
+            throw new IllegalArgumentException("El archivo debe ser de tipo .xlsx");
+        }
         try {
             Path temp = Files.createTempFile("access_points-", ".xlsx");
             multipartFile.transferTo(temp);

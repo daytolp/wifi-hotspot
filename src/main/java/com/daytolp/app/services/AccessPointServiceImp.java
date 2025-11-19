@@ -6,7 +6,6 @@ import com.daytolp.app.exceptions.NotFoundException;
 import com.daytolp.app.models.AccessPoint;
 import com.daytolp.app.repositories.AccessPointRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación del servicio de gestión de puntos de acceso WiFi.
+ */
 @Service
 public class AccessPointServiceImp implements AccessPointService {
 
@@ -26,6 +28,12 @@ public class AccessPointServiceImp implements AccessPointService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /**
+     * Procesa una lista de puntos de acceso WiFi, guardando solo los nuevos y omitiendo duplicados.
+     *
+     * @param accessPoints Lista de puntos de acceso WiFi a procesar. No debe ser null.
+     * @return Objeto AccessPointProcessResponse que contiene listas de IDs guardados y omitidos.
+     */
     @Override
     @Transactional
     public AccessPointProcessResponse processAccessPoints(List<AccessPoint> accessPoints) {
@@ -49,6 +57,13 @@ public class AccessPointServiceImp implements AccessPointService {
                 .build();
     }
 
+    /**
+     * Obtiene una lista paginada de todos los puntos de acceso WiFi.
+     *
+     * @param page Número de página a recuperar (basado en cero, primera página = 0)
+     * @param size Cantidad de elementos por página
+     * @return Objeto Page que contiene una página de AccessPointDTOs
+     */
     @Override
     public Page<AccessPointDTO> getAccessPoints(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -56,21 +71,52 @@ public class AccessPointServiceImp implements AccessPointService {
         return entities.map(ap -> modelMapper.map(ap, AccessPointDTO.class));
     }
 
+    /**
+     * Consulta la información completa de un punto de acceso WiFi específico dado su ID.
+     *
+     * @param id Identificador único del punto de acceso a buscar. No debe ser null o vacío.
+     * @return Objeto AccessPointDTO con toda la información del punto de acceso.
+     */
     @Override
     public AccessPointDTO getAccesPointById(String id) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("El ID del punto de acceso no debe ser nulo o vacío");
+        }
         AccessPoint accessPoint = accessPointRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Punto de acceso no encontrado con id: " + id));
-        return modelMapper.map(accessPoint, new TypeToken<AccessPointDTO>() {;
-        }.getType());
+        return modelMapper.map(accessPoint, AccessPointDTO.class);
     }
 
+    /**
+     * Obtiene una lista paginada de puntos de acceso WiFi filtrados por alcaldía.
+     *
+     * @param municipality Nombre de la alcaldía o municipio a filtrar. No debe ser null o vacío.
+     * @param page Número de página a recuperar (basado en cero, primera página = 0)
+     * @param size Cantidad de elementos por página
+     * @return Objeto Page que contiene una página de AccessPointDTOs
+     */
     @Override
     public Page<AccessPointDTO> getAccesPointByMunicipality(String municipality, int page, int size) {
+        if (municipality == null || municipality.isEmpty()) {
+            throw new IllegalArgumentException("El nombre del municipio no debe ser nulo o vacío");
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<AccessPoint> entities = accessPointRepository.findByMunicipality(municipality, pageable);
         return entities.map(ap -> modelMapper.map(ap, AccessPointDTO.class));
     }
 
+    /**
+     * Obtiene una lista paginada de puntos de acceso WiFi ordenados por proximidad a una coordenada dada.
+     *
+     * @param latitude Latitud de la coordenada de referencia en grados decimales.
+     *                 Debe estar en el rango [-90, 90].
+     * @param longitude Longitud de la coordenada de referencia en grados decimales.
+     *                  Debe estar en el rango [-180, 180].
+     * @param page Número de página a recuperar (basado en cero, primera página = 0)
+     * @param size Cantidad de elementos por página
+     * @return Objeto Page que contiene una página de AccessPointDTOs ordenados por proximidad
+     *
+     */
     @Override
     public Page<AccessPointDTO> getAccessPointsOrderProximity(double latitude, double longitude,
             int page, int size) {

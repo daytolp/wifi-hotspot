@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 
@@ -32,17 +31,9 @@ public class FileServiceImp implements FileService {
 
     @Override
     public AccessPointProcessResponse processFile(MultipartFile multipartFile) {
-        String fileName = Constants.FILE_NAME;
         try {
-            Path path = Constants.FILES_DIR.resolve(fileName);
-            log.info("path::::::: " +path.toString());
-
-//            Files.createDirectories(path.getParent()); //si no existe la carpeta files la crea
-//            Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);//si el archivo ya existe lo remplaza
-
             Path temp = Files.createTempFile("access_points-", ".xlsx");
             multipartFile.transferTo(temp);
-
             log.info("-------------> INICIO DEL PROCESO BATCH <------------");
             JobParameters jobParameters = new JobParametersBuilder()
                     .addDate("fecha", new Date())

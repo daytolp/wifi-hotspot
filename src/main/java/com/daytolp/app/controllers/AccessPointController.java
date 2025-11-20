@@ -46,7 +46,7 @@ public class AccessPointController {
     })
     @GetMapping
     public ResponseEntity<Page<AccessPointDTO>> getAccessPoints(
-            @Parameter(description = "Número de página (0-based)", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Número de página 0", example = "0") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Tamaño de página", example = "10") @RequestParam(defaultValue = "10") int size) {
         Page<AccessPointDTO> result = accessPointService.getAccessPoints(page, size);
         return ResponseEntity.ok(result);
@@ -97,6 +97,29 @@ public class AccessPointController {
             @Parameter(description = "Tamaño de página", example = "10") @RequestParam(defaultValue = "10") int size) {
 
         Page<AccessPointDTO> result = accessPointService.getAccessPointsOrderProximity(latitude, longitude, page, size);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Obtiene una página de puntos de acceso filtrados por municipality.
+     * @param page número de página (0 por defecto)
+     * @param size tamaño de página (10 por defecto)
+     * @return página con DTOs y metadatos de paginación
+     */
+    @Operation(summary = "Listar puntos de acceso por alcaldía", description = "Retorna una página de puntos de acceso WiFi filtrados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado paginado de puntos de acceso obtenidos exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/by-municipality")
+    public ResponseEntity<Page<AccessPointDTO>> getAccesPointByMunicipality(
+            @Parameter(description = "Nombre de alcaldía", example = "Venustiano Carranza") @RequestParam String municipality,
+            @Parameter(description = "Número de página 0", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Tamaño de página", example = "10") @RequestParam(defaultValue = "10") int size) {
+        Page<AccessPointDTO> result = accessPointService.getAccesPointByMunicipality(municipality, page, size);
         return ResponseEntity.ok(result);
     }
 }

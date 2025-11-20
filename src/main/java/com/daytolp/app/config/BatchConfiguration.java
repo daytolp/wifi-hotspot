@@ -53,21 +53,19 @@ public class BatchConfiguration {
                 .build();
     }
 
-    // Reader inyecta el parámetro de `routeFile` del Job
     @Bean
-    @StepScope//(proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @StepScope
     public ItemStreamReader<AccessPoint> accessPointReader(
             @Value("#{jobParameters['routeFile']}") String routeFile) {
         return new ExcelAccessPointItemReader(routeFile);
     }
 
-    // Processor opcional (puedes dejarlo como pass-through)
+
     @Bean
     public ItemProcessor<AccessPoint, AccessPoint> accessPointProcessor() {
         return item -> item;
     }
 
-    // Writer JPA (usa batching de Hibernate por chunk)
     @Bean
     public JpaItemWriter<AccessPoint> accessPointWriter(EntityManagerFactory emf) {
         JpaItemWriter<AccessPoint> writer = new JpaItemWriter<>();

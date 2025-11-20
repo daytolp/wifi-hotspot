@@ -11,6 +11,10 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Iterator;
 
+/**
+ * Lector de puntos de acceso desde archivos Excel para Spring Batch.
+ *
+ */
 @Slf4j
 public class ExcelAccessPointItemReader implements ItemStreamReader<AccessPoint> {
     private final String filePath;
@@ -20,10 +24,21 @@ public class ExcelAccessPointItemReader implements ItemStreamReader<AccessPoint>
     private Iterator<Row> rows;
     private boolean headerSkipped = false;
 
+    /**
+     * Constructor que inicializa el lector con la ruta del archivo Excel.
+     *
+     * @param filePath Ruta completa del archivo Excel a leer
+     */
     public ExcelAccessPointItemReader(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Lee y retorna el siguiente punto de acceso del archivo Excel.
+     *
+     * @return El siguiente AccessPoint leído del archivo, o null si no hay más filas
+     * @throws Exception si ocurre un error durante la lectura
+     */
     @Override
     public AccessPoint read() {
         if (rows == null) return null;
@@ -51,6 +66,12 @@ public class ExcelAccessPointItemReader implements ItemStreamReader<AccessPoint>
         return null; // fin del archivo
     }
 
+    /**
+     * Abre el archivo Excel y prepara el lector para comenzar a procesar datos.
+     *
+     * @param executionContext Contexto de ejecución de Spring Batch
+     * @throws ItemStreamException si el archivo no existe o no se puede abrir
+     */
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
         if (filePath == null || filePath.isEmpty()) return;
@@ -65,11 +86,21 @@ public class ExcelAccessPointItemReader implements ItemStreamReader<AccessPoint>
         }
     }
 
+    /**
+     * Actualiza el contexto de ejecución con el estado actual del lector.
+     *
+     * @param executionContext Contexto de ejecución de Spring Batch
+     * @throws ItemStreamException si ocurre un error durante la actualización
+     */
     @Override
     public void update(ExecutionContext executionContext) throws ItemStreamException {
     }
 
-
+    /**
+     * Cierra el archivo Excel y libera todos los recursos asociados.
+     *
+     * @throws ItemStreamException si ocurre un error crítico durante el cierre
+     */
     @Override
     public void close() throws ItemStreamException {
         try {

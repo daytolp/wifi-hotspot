@@ -34,25 +34,25 @@ public class AccessPointServiceImp implements AccessPointService {
      * @param accessPoints Lista de puntos de acceso WiFi a procesar. No debe ser null.
      * @return Objeto AccessPointProcessResponse que contiene listas de IDs guardados y omitidos.
      */
-    @Override
-    @Transactional
-    public AccessPointProcessResponse processAccessPoints(List<AccessPoint> accessPoints) {
-        List<String> ids = accessPoints.stream()
-                .map(AccessPoint::getId)
-                .collect(Collectors.toList());
-
-        List<String> existingIds = accessPointRepository.findByIdIn(ids);
-        List<AccessPoint> newAccessPoints = accessPoints.stream()
-                .filter(ap -> !existingIds.contains(ap.getId()))
-                .collect(Collectors.toList());
-        accessPointRepository.saveAll(newAccessPoints);
-
-        List<String> savedIds = newAccessPoints.stream()
-                .map(AccessPoint::getId)
-                .collect(Collectors.toList());
-
-        return null;
-    }
+//    @Override
+//    @Transactional
+//    public AccessPointProcessResponse processAccessPoints(List<AccessPoint> accessPoints) {
+//        List<String> ids = accessPoints.stream()
+//                .map(AccessPoint::getId)
+//                .collect(Collectors.toList());
+//
+//        List<String> existingIds = accessPointRepository.findByIdIn(ids);
+//        List<AccessPoint> newAccessPoints = accessPoints.stream()
+//                .filter(ap -> !existingIds.contains(ap.getId()))
+//                .collect(Collectors.toList());
+//        accessPointRepository.saveAll(newAccessPoints);
+//
+//        List<String> savedIds = newAccessPoints.stream()
+//                .map(AccessPoint::getId)
+//                .collect(Collectors.toList());
+//
+//        return null;
+//    }
 
     /**
      * Obtiene una lista paginada de todos los puntos de acceso WiFi.

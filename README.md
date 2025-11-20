@@ -37,7 +37,7 @@ Se recomienda usar IntelliJ IDEA:
 
 Ejecución local
 ---
-1. Verificar que la base de datos `hotspots-wifi` esté disponible y que las credenciales en `src/main/resources/application.properties` (o el profile correspondiente) sean correctas.  
+1. Verificar que la base de datos `hotspots-wifi` esté disponible y que las credenciales en `src/main/resources/application.properties` sean correctas.  
 2. Ejecutar la clase principal `WifiHotspotAppApplication.java` desde el IDE o con:
    mvn spring-boot:run
 
@@ -46,7 +46,7 @@ Docker (arranque rápido)
 El proyecto incluye un `Dockerfile` y `docker-compose.yml` para facilitar el despliegue. Después de clonar el repositorio, ejecutar:
 docker-compose up -d --build
 
-Esto levantará un contenedor de PostgreSQL, ejecutará el script `schema.sql` para crear la tabla `access_point` y construirá/arrancará la aplicación.
+Esto levantará un contenedor de PostgreSQL, ejecutará el script `schema.sql` para crear la tabla `access_point` y construirá la aplicación.
 
 Importar datos desde Excel
 ---
@@ -67,4 +67,37 @@ Notas finales
 ---
 - Asegúrate de que las credenciales y URL de la base de datos en `application.properties` coincidan con tu entorno antes de arrancar la aplicación.  
 
+Evidencias de funcionamiento en Swagger UI
+---
+A continuación se incluyen capturas de la carpeta `docs/` que evidencian el correcto funcionamiento de los 5 endpoints expuestos en Swagger UI y la inserción de registros en la base de datos.
 
+- 1) Endpoint: Listar todos los puntos de acceso (GET)
+![Swagger - Listar todos](docs/consulta-todos.jpeg)
+Descripción: Muestra la definición del endpoint para obtener todos los access points y ejemplo de respuesta.
+
+- 2) Endpoint: Consultar por id (GET)
+![Swagger - Consultar por id](docs/consulta-por-id.jpeg)
+Descripción: Evidencia del endpoint GET /access-points/by-id con parámetros y ejemplo de respuesta.
+
+- 3) Endpoint: Búsqueda por proximidad (GET)
+![Swagger - Búsqueda por proximidad](docs/consulta-por-proximidad-resultado.jpeg)
+
+![Swagger - Búsqueda con distancia](docs/consulta-proximidad-visualizar-total.PNG)
+Descripción: Muestra la operación que devuelve puntos de acceso ordenados por cercanía al punto dado.
+
+- 4) Endpoint: Búsqueda por alcaldía (GET)
+![Swagger - Búsqueda con distancia](docs/consulta-por-alcaldia.PNG)
+Descripción: Captura del endpoint que devuelve resultados filtrados por alcaldía.
+
+- 5) Endpoint: Carga de archivo (POST)
+![Swagger - Carga de archivo](docs/subida-archivo-excel.jpeg)
+Descripción: Evidencia del endpoint POST para subir el archivo Excel y disparar el procesamiento (job de Spring Batch).
+
+Registros insertados en la base de datos
+---
+![Registros en BD](docs/registro-importados-en-bd.PNG)
+Descripción: Captura de la tabla `access_point` mostrando que los registros del archivo Excel fueron insertados correctamente.
+
+Nota
+---
+Todas las consultas que devuelven un listado traen el total de registros en la respuesta en el campo "totalElements".

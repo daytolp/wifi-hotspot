@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS access_point (
+    id VARCHAR(200) PRIMARY KEY,
+    programa VARCHAR(150) NOT NULL,
+    latitud DOUBLE PRECISION NOT NULL,
+    longitud DOUBLE PRECISION NOT NULL,
+    alcaldia VARCHAR(120) NOT NULL
+);

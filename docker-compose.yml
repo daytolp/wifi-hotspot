@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  postgres_db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prueba123
+      POSTGRES_DB: hotspots-wifi
+    ports:
+      - 5435:5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
+    networks:
+        - hotspot-network
+
+  wifi_hotspot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wifi_hotspot
+    environment:
+      DB_HOST: postgres_db
+      DB_USER_NAME: postgres
+      DB_PASSWORD: prueba123
+      DATA_BASE: hotspots-wifi
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_db
+    networks:
+        - hotspot-network
+
+networks:
+  hotspot-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

@@ -109,7 +109,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/access-points/proximity?latitude=19.42137&longitude=-99.07803&page=1&size=20",
+					"raw": "http://localhost:8080/access-points/by-municipality?municipality=Venustiano Carranza&page=1&size=20",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -117,16 +117,46 @@
 					"port": "8080",
 					"path": [
 						"access-points",
-						"proximity"
+						"by-municipality"
 					],
 					"query": [
 						{
-							"key": "latitude",
-							"value": "19.42137"
+							"key": "municipality",
+							"value": "Venustiano Carranza"
 						},
 						{
-							"key": "longitude",
-							"value": "-99.07803"
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/access-points/by-municipality?municipality=Venustiano Carranza&page=1&size=20",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/access-points/by-municipality?municipality=Venustiano Carranza&page=1&size=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"access-points",
+						"by-municipality"
+					],
+					"query": [
+						{
+							"key": "municipality",
+							"value": "Venustiano Carranza"
 						},
 						{
 							"key": "page",

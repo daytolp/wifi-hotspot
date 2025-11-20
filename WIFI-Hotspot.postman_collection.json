@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "58669f73-f557-4825-a869-71b9025e2ebe",
+		"name": "WIFI-Hotspot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20818422",
+		"_collection_link": "https://warped-star-728018.postman.co/workspace/Team-Workspace~e9c67a9a-5211-417f-88f4-ed070a3c48f2/collection/20818422-58669f73-f557-4825-a869-71b9025e2ebe?action=share&source=collection_link&creator=20818422"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/upload-excel",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/daayt/Downloads/00-2025-wifi_gratuito_en_cdmx.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/upload-excel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"upload-excel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/access-points?page=0&size=10",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/access-points?page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"access-points"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/access-points/by-id?id=MEX-AIM-AER-AICMT1-M-GW010",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/access-points/by-id?id=MEX-AIM-AER-AICMT1-M-GW010",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"access-points",
+						"by-id"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "MEX-AIM-AER-AICMT1-M-GW010"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/access-points/proximity?latitude=19.42137&longitude=-99.07803&page=1&size=20",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/access-points/proximity?latitude=19.42137&longitude=-99.07803&page=1&size=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"access-points",
+						"proximity"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "19.42137"
+						},
+						{
+							"key": "longitude",
+							"value": "-99.07803"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -13,7 +13,6 @@ import java.util.Iterator;
 
 /**
  * Lector de puntos de acceso desde archivos Excel para Spring Batch.
- *
  */
 @Slf4j
 public class ExcelAccessPointItemReader implements ItemStreamReader<AccessPoint> {

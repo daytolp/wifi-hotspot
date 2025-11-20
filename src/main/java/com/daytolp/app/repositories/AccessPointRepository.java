@@ -28,7 +28,6 @@ public interface AccessPointRepository extends JpaRepository<AccessPoint, String
 
     /**
      * Obtiene una página de puntos de acceso filtrados por alcaldía/municipio.
-     * Soporta paginación para manejar grandes volúmenes de datos.
      *
      * @param municipality Nombre de la alcaldía/municipio a filtrar
      * @param pageable Configuración de paginación (página, tamaño, ordenamiento)

@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface AccessPointService {
 
-//    public AccessPointProcessResponse processAccessPoints(List<AccessPoint> accessPoints);
-
     public Page<AccessPointDTO>getAccessPoints(int page, int size);
 
     public AccessPointDTO getAccesPointById(String id);

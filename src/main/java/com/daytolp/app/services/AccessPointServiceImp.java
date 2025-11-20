@@ -51,10 +51,7 @@ public class AccessPointServiceImp implements AccessPointService {
                 .map(AccessPoint::getId)
                 .collect(Collectors.toList());
 
-        return AccessPointProcessResponse.builder()
-                .idsSaves(savedIds)
-                .idsSkips(existingIds)
-                .build();
+        return null;
     }
 
     /**

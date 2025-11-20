@@ -1,11 +1,11 @@
 package com.daytolp.app.dtos;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class AccessPointDTO {
     private String id;

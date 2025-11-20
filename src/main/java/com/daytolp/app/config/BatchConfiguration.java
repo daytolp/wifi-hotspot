@@ -1,71 +1,78 @@
 package com.daytolp.app.config;
 
-import com.daytolp.app.batch.steps.DeleteFileStep;
-import com.daytolp.app.batch.steps.ReaderStep;
-import com.daytolp.app.batch.steps.WriterStep;
+import com.daytolp.app.batch.steps.ExcelAccessPointItemReader;
+import com.daytolp.app.constanst.Constants;
+import com.daytolp.app.models.AccessPoint;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobScope;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemStreamReader;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
+
+import javax.persistence.EntityManagerFactory;
+
 
 @EnableBatchProcessing
+@EnableTransactionManagement
 @Configuration
 public class BatchConfiguration {
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
 
     @Autowired
-    public JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+    private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    @JobScope
-    public ReaderStep accessPointReaderStep(){
-        return new ReaderStep();
+    public Job readExcelJob(Step excelToDbStep) {
+        return jobBuilderFactory.get("readExcelJob")
+                .incrementer(new RunIdIncrementer())
+                .start(excelToDbStep)
+                .build();
     }
 
     @Bean
-    @JobScope
-    public WriterStep accessPointWriterStep(){
-        return new WriterStep();
+    public Step excelToDbStep(ItemStreamReader<AccessPoint> accessPointReader,
+                              ItemProcessor<AccessPoint, AccessPoint> accessPointProcessor,
+                              JpaItemWriter<AccessPoint> accessPointWriter) {
+
+        return stepBuilderFactory.get("excelToDbStep")
+                .<AccessPoint, AccessPoint>chunk(Constants.CHUNK_SIZE)
+                .reader(accessPointReader(null))
+                .processor(accessPointProcessor)
+                .writer(accessPointWriter)
+                .build();
     }
 
+    // Reader inyecta el parámetro de `routeFile` del Job
     @Bean
-    @JobScope
-    public DeleteFileStep deleteProcessorStep(){
-        return new DeleteFileStep();
+    @StepScope//(proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public ItemStreamReader<AccessPoint> accessPointReader(
+            @Value("#{jobParameters['routeFile']}") String routeFile) {
+        return new ExcelAccessPointItemReader(routeFile);
     }
 
+    // Processor opcional (puedes dejarlo como pass-through)
     @Bean
-    public Step readFileStep() {
-        return stepBuilderFactory.get("accessPointReaderStep")
-                .tasklet(accessPointReaderStep()).build();
+    public ItemProcessor<AccessPoint, AccessPoint> accessPointProcessor() {
+        return item -> item;
     }
 
+    // Writer JPA (usa batching de Hibernate por chunk)
     @Bean
-    public Step writerDataStep() {
-        return stepBuilderFactory.get("accessPointWriterStep")
-                .tasklet(accessPointWriterStep()).build();
-    }
-
-    @Bean
-    public Step deleteFileStep() {
-        return stepBuilderFactory.get("deleteProcessorStep")
-                .tasklet(deleteProcessorStep()).build();
-    }
-
-    @Bean
-    public Job readExcelJob() {
-        return jobBuilderFactory
-                .get("readExcelJob")
-                .start(readFileStep())
-                .next(writerDataStep())
-                .next(deleteFileStep()).build();
+    public JpaItemWriter<AccessPoint> accessPointWriter(EntityManagerFactory emf) {
+        JpaItemWriter<AccessPoint> writer = new JpaItemWriter<>();
+        writer.setEntityManagerFactory(emf);
+        return writer;
     }
 
 }

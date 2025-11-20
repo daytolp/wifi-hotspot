@@ -45,9 +45,12 @@ public class FileServiceImp implements FileService {
         if (name == null || !name.endsWith(".xlsx")) {
             throw new IllegalArgumentException("El archivo debe ser de tipo .xlsx");
         }
+
         try {
-            Path temp = Files.createTempFile("access_points-", ".xlsx");
+            String dateStr = String.valueOf(new Date().getTime());
+            Path temp = Files.createTempFile("access_points-" + dateStr, ".xlsx");
             multipartFile.transferTo(temp);
+
             log.info("-------------> INICIO DEL PROCESO BATCH <------------");
             JobParameters jobParameters = new JobParametersBuilder()
                     .addDate("fecha", new Date())
@@ -56,18 +59,11 @@ public class FileServiceImp implements FileService {
 
             jobLauncher.run(job, jobParameters);
 
-            JobExecution execution = jobLauncher.run(job, jobParameters);
-            ExecutionContext ctx = execution.getExecutionContext();
-
-            @SuppressWarnings("unchecked")
-            List<String> savedIds = (List<String>) ctx.get("savedIds");
-            @SuppressWarnings("unchecked")
-            List<String> skippedIds = (List<String>) ctx.get("skippedIds");
-
+            log.info("-------------> FIN DEL PROCESO BATCH <------------");
 
             return AccessPointProcessResponse.builder()
-                    .idsSaves(savedIds)
-                    .idsSkips(skippedIds)
+                    .status("OK")
+                    .message("Archivo procesado exitosamente")
                     .build();
         } catch (IOException e) {
             throw new RuntimeException("Error I/O al procesar el archivo", e);

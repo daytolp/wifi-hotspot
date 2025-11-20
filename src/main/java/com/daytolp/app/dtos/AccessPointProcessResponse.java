@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Builder
 public class AccessPointProcessResponse {
-    private List<String> idsSaves;
-    private List<String> idsSkips;
+    private String status;
+    private String message;
 }

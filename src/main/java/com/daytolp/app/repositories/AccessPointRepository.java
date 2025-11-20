@@ -61,11 +61,11 @@ public interface AccessPointRepository extends JpaRepository<AccessPoint, String
      *
      */
     @Query(value = """
-        SELECT id, program, latitude, longitude, municipality,
+        SELECT id, programa, latitud, longitud, alcaldia,
         (6371 * acos(
-            cos(radians(:latitude)) * cos(radians(latitude)) * 
-            cos(radians(longitude) - radians(:longitude)) + 
-            sin(radians(:latitude)) * sin(radians(latitude))
+            cos(radians(:latitude)) * cos(radians(latitud)) * 
+            cos(radians(longitud) - radians(:longitude)) + 
+            sin(radians(:latitude)) * sin(radians(latitud))
         )) AS distance 
         FROM access_point 
         ORDER BY distance

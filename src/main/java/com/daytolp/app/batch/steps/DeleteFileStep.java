@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -21,15 +20,14 @@ public class DeleteFileStep implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        //File file = resourceLoader.getResource( Constants.CLASSPATH + File.separator + Constants.FILE_NAME).getFile();
 
-        ExecutionContext jobContext = chunkContext
+        String routeFile = chunkContext
                 .getStepContext()
                 .getStepExecution()
                 .getJobExecution()
-                .getExecutionContext();
+                .getJobParameters()
+                .getString(Constants.ROUTE_FILE);
 
-        String routeFile = jobContext.getString("routeFile");
         if (routeFile == null) {
             throw new IllegalStateException("No se encontró 'routeFile' en el ExecutionContext");
         }

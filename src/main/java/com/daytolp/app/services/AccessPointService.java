@@ -1,8 +1,6 @@
 package com.daytolp.app.services;
 
 import com.daytolp.app.dtos.AccessPointDTO;
-import com.daytolp.app.dtos.AccessPointProcessResponse;
-import com.daytolp.app.models.AccessPoint;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

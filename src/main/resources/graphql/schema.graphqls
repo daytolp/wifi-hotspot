@@ -1,0 +1,25 @@
+type Query {
+    getAccessPoints(page: Int = 0, size: Int = 10): AccessPointPage!
+    getAccessPointById(id: ID!): AccessPoint
+    getAccessPointByMunicipality(municipality: String!, page: Int = 0, size: Int = 10): AccessPointPage!
+    getAccessPointsOrderProximity(latitude: Float!, longitude: Float!, page: Int = 0, size: Int = 10): AccessPointPage!
+}
+
+type AccessPoint {
+    id: ID!
+    program: String!
+    latitude: Float!
+    longitude: Float!
+    municipality: String!
+}
+
+type AccessPointPage {
+    content: [AccessPoint!]!
+    totalElements: Int!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+    first: Boolean!
+    last: Boolean!
+    empty: Boolean!
+}

@@ -1,49 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <style>
-        body {
-            height: 100%;
-            margin: 0;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        #graphiql {
-            height: 100vh;
-        }
-    </style>
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+    <meta charset="UTF-8">
+    <title>GraphiQL</title>
+    <!-- CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/graphiql@2.4.0/graphiql.min.css" crossorigin="anonymous" />
+    <style>html,body{height:100%;margin:0}#graphiql{height:100vh}</style>
 </head>
-
 <body>
-<div id="graphiql">Loading...</div>
-<script src="https://unpkg.com/graphiql/graphiql.min.js" type="application/javascript"></script>
+<div id="graphiql">Cargando...</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/graphiql@2.4.0/graphiql.min.js" crossorigin></script>
+
 <script>
-    const params = new URLSearchParams(window.location.search);
-
+    const params = new URLSearchParams(location.search);
     const path = params.get("path") || "/graphql";
-    const url = `${location.protocol}//${location.host}${path}`;
-
-    const wsPath = params.get("wsPath") || "/graphql";
+    const url = `${location.origin}${path}`;
     const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const subscriptionUrl = `${wsProtocol}//${location.host}${wsPath}`;
+    const subscriptionUrl = `${wsProtocol}//${location.host}${path}`;
 
-    const gqlFetcher = GraphiQL.createFetcher({
-        url,
-        subscriptionUrl,
-    });
+    const fetcher = GraphiQL.createFetcher({ url, subscriptionUrl });
 
     ReactDOM.render(
-        React.createElement(GraphiQL, {
-            fetcher: gqlFetcher,
-            defaultVariableEditorOpen: true,
-            headerEditorEnabled: true,
-            shouldPersistHeaders: true
-        }),
-        document.getElementById('graphiql'),
+      React.createElement(GraphiQL, {
+        fetcher,
+        defaultVariableEditorOpen: true,
+        headerEditorEnabled: true,
+        shouldPersistHeaders: true
+      }),
+      document.getElementById('graphiql')
     );
 </script>
 </body>

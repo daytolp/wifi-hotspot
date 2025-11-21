@@ -63,7 +63,11 @@ Colección Postman
 ---
 En el proyecto se incluye la colección `WIFI-Hotspot.postman_collection.json` (Collection v2.1). Importa esta colección en Postman para probar los endpoints.  
 - El endpoint POST se usa para cargar el archivo Excel.  
+- El endpoint POST para consultar los servicios de consulta requeridos en la prueba técnica con GraphQL "http://localhost:8080/graphql".
 - Los demás endpoints permiten consultar la información de acuerdo con los requisitos de la prueba técnica.
+
+Nota: en la raíz del proyecto se encuentra el archivo "querys-graphql.txt" con ejemplos de consultas GraphQL para usar en Postman.
+También abrir en tu navegador Chrome la URL: http://localhost:8080/graphiql.html para usar la interfaz gráfica de GraphiQL.
 
 Notas finales
 ---
@@ -99,6 +103,38 @@ Registros insertados en la base de datos
 ---
 ![Registros en BD](docs/registro-importados-en-bd.PNG)
 Descripción: Captura de la tabla `access_point` mostrando que los registros del archivo Excel fueron insertados correctamente.
+
+
+Evidencias de funcionamiento en Potsman con GraphQL
+---
+A continuación se incluyen capturas de la carpeta `docs/` que evidencian el correcto funcionamiento de los 5 endpoints expuestos en Swagger UI y la inserción de registros en la base de datos.
+
+- 1) Endpoint: Listar todos los puntos de acceso (GET)
+     ![Swagger - Listar todos](docs/graphql-consulta-todos-los-registros.PNG)
+     Descripción: Muestra la definición del endpoint para obtener todos los access points y ejemplo de respuesta.
+
+- 2) Endpoint: Consultar por id (GET)
+     ![Swagger - Consultar por id](docs/graphql-consulta-por-id.PNG)
+     Descripción: Evidencia del endpoint GET /access-points/by-id con parámetros y ejemplo de respuesta.
+
+- 3) Endpoint: Búsqueda por proximidad (GET)
+     ![Swagger - Búsqueda por proximidad](docs/graphql-consulta-por-aproximidad.PNG)
+     Descripción: Muestra la operación que devuelve puntos de acceso ordenados por cercanía al punto dado.
+
+- 4) Endpoint: Búsqueda por alcaldía (GET)
+     ![Swagger - Búsqueda con distancia](docs/graphql-consulta-por-alcaldia.PNG)
+     Descripción: Captura del endpoint que devuelve resultados filtrados por alcaldía.
+
+Registros insertados en la base de datos
+---
+![Registros en BD](docs/registro-importados-en-bd.PNG)
+Descripción: Captura de la tabla `access_point` mostrando que los registros del archivo Excel fueron insertados correctamente.
+
+
+
+
+
+
 
 Nota
 ---

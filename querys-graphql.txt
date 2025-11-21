@@ -1,0 +1,92 @@
+#Consulta por id
+query GetAccessPointById($id: ID!) {
+  getAccessPointById(id: $id) {
+    id
+    program
+    latitude
+    longitude
+    municipality
+  }
+}
+
+#Variables
+{
+  "id": "MEX-AIM-AER-AICMT1-M-GW001"
+}
+
+#Consulta de todos paginada
+query GetAccessPoints($page: Int, $size: Int) {
+  getAccessPoints(page: $page, size: $size) {
+    content {
+      id
+      program
+      latitude
+      longitude
+      municipality
+    }
+    totalElements
+    totalPages
+    size
+    number
+    first
+    last
+    empty
+  }
+}
+
+#Variables
+{
+  "page": 2,
+  "size": 20
+}
+
+#Consulta por alcaldía
+query GetAccessPointByMunicipality($municipality: String!, $page: Int, $size: Int) {
+  getAccessPointByMunicipality(municipality: $municipality, page: $page, size: $size) {
+    content {
+      id
+      program
+      latitude
+      longitude
+      municipality
+    }
+    totalElements
+    totalPages
+    size
+    number
+    last
+  }
+}
+
+#Variables
+{
+  "municipality": "Venustiano Carranza",
+  "page": 2,
+  "size": 20
+}
+
+#Consulta por aproximidad
+query GetAccessPointsOrderProximity($latitude: Float!, $longitude: Float!, $page: Int, $size: Int) {
+  getAccessPointsOrderProximity(latitude: $latitude, longitude: $longitude, page: $page, size: $size) {
+    content {
+      id
+      program
+      latitude
+      longitude
+      municipality
+    }
+    totalElements
+    totalPages
+    size
+    number
+    last
+  }
+}
+
+#Variables
+{
+  "latitude": 19.526298,
+  "longitude": -99.172219,
+  "page": 2,
+  "size": 20
+}

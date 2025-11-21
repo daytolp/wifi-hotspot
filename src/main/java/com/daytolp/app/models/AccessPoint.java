@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class AccessPoint {
 
     @Id
-    @Column(name = "id", length = 200, nullable = false)
+    @Column(name = "id", length = 200, nullable = false, unique = true)
     private String id;
 
     @Column(name = "programa", nullable = false, length = 150)

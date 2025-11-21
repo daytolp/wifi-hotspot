@@ -11,15 +11,19 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemStreamReader;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 
 /**
@@ -61,7 +65,7 @@ public class BatchConfiguration {
     @Bean
     public Step excelToDbStep(ItemStreamReader<AccessPoint> accessPointReader,
                               ItemProcessor<AccessPoint, AccessPoint> accessPointProcessor,
-                              JpaItemWriter<AccessPoint> accessPointWriter) {
+                              JdbcBatchItemWriter<AccessPoint> accessPointWriter) {
 
         return stepBuilderFactory.get("excelToDbStep")
                 .<AccessPoint, AccessPoint>chunk(Constants.CHUNK_SIZE)
@@ -95,16 +99,37 @@ public class BatchConfiguration {
     }
 
     /**
-     * Escritor JPA que persiste los puntos de acceso en la base de datos.
+     * Escritor JPA que persiste los puntos de acceso en la base de datos si algun registro ya existe lo actualiza.
      *
-     * @param emf fábrica de EntityManager configurada por Spring
-     * @return escritor JPA listo para usar en el Step
+     * @param dataSource fuente de datos para la conexión a la base de datos
+     * @return escritor JDBC listo para usar en el Step
      */
     @Bean
-    public JpaItemWriter<AccessPoint> accessPointWriter(EntityManagerFactory emf) {
-        JpaItemWriter<AccessPoint> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
+    public JdbcBatchItemWriter<AccessPoint> accessPointWriter(DataSource dataSource) {
+        String sql = """
+            INSERT INTO access_point (id, programa, latitud, longitud, alcaldia)
+            VALUES (:id, :program, :latitude, :longitude, :municipality)
+            ON CONFLICT (id)
+            DO UPDATE SET
+                programa = EXCLUDED.programa,
+                latitud = EXCLUDED.latitud,
+                longitud = EXCLUDED.longitud,
+                alcaldia = EXCLUDED.alcaldia
+            """;
+
+        return new JdbcBatchItemWriterBuilder<AccessPoint>()
+                .dataSource(dataSource)
+                .sql(sql)
+                .itemSqlParameterSourceProvider(item -> {
+                    MapSqlParameterSource params = new MapSqlParameterSource();
+                    params.addValue("id", item.getId());
+                    params.addValue("program", item.getProgram());
+                    params.addValue("latitude", item.getLatitude());
+                    params.addValue("longitude", item.getLongitude());
+                    params.addValue("municipality", item.getMunicipality());
+                    return params;
+                })
+                .build();
     }
 
 }

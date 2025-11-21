@@ -11,6 +11,8 @@ Tecnologías y versiones
 - Maven 3.9.x
 - PostgreSQL 16
 - Spring Batch (procesamiento por lotes)
+- GraphQL (consulta de datos)
+- Docker y Docker Compose
 - Pruebas: JUnit 5 y Mockito
 - Documentación API: Swagger UI disponible en http://localhost:8080/swagger-ui/index.html
 
